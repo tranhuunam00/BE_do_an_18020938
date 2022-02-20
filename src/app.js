@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 
 //datebase --mongo
-const db = require("./config/db/index");
+// const db = require("./config/db/index");
 // db.connect();
 //datebase --
 
