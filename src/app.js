@@ -9,7 +9,6 @@ db.connect();
 //datebase --
 
 app.get("/", (req, res) => {
-  logger.info(`ngon r`);
   res.sendFile(path.join(__dirname, "./home.html"));
 });
 
