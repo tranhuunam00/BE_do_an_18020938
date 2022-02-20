@@ -15,7 +15,7 @@ app.use("/public", express.static(path.join(__dirname, "./public")));
 app.use("/docs", express.static(path.join(__dirname, "docs")));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "./home.html"));
+  res.sendFile(path.join(__dirname, "../public/home.html"));
 });
 
 app.listen(process.env.PORT || 3000, () => {
