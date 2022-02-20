@@ -9,7 +9,8 @@ db.connect();
 //datebase --
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  logger.info(`ngon r`);
+  res.sendFile(path.join(__dirname, "./home.html"));
 });
 
 app.listen(process.env.PORT || 3000, () => {
