@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const path = require("path");
-
+const logger = require("./utils/logger");
 require("dotenv").config();
 
 //datebase --mongo
@@ -15,6 +15,7 @@ app.use("/public", express.static(path.join(__dirname, "./public")));
 app.use("/docs", express.static(path.join(__dirname, "docs")));
 
 app.get("/", (req, res) => {
+  logger.debug("ok");
   res.sendFile(path.join(__dirname, "../public/home.html"));
 });
 
