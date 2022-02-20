@@ -1,4 +1,5 @@
 // Success code
+
 module.exports.HTTP_STATUS_CREATED = 201;
 module.exports.HTTP_STATUS_OK = 200;
 
