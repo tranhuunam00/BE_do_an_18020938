@@ -1,12 +1,18 @@
 const express = require("express");
 const app = express();
 const port = 3000;
+const path = require("path");
+
 require("dotenv").config();
 
 //datebase --mongo
 const db = require("./config/db/index");
 db.connect();
 //datebase --
+
+//public-folder
+app.use("/public", express.static(path.join(__dirname, "./public")));
+app.use("/docs", express.static(path.join(__dirname, "docs")));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "./home.html"));
