@@ -2,6 +2,11 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+//datebase --mongo
+const db = require("./config/db/index");
+db.connect();
+//datebase --
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
