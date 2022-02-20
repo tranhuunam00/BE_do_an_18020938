@@ -1,7 +1,4 @@
 const userService = require("../services/user");
-const pdfHelper = require("../helpers/pdf/pdfmake");
-const contentDisposition = require("content-disposition");
-const path = require("path");
 const pdf = require("../helpers/pdf/pdf");
 
 const getAllUsers = async (req, res) => {
