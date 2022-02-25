@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "nodemon": "nodemon --inspect src/app.js -e js,scss,json,hbs",
     "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,12 +19,14 @@
   },
   "homepage": "https://github.com/tranhuunam00/BE_do_an_18020938#readme",
   "dependencies": {
+    "buffer": "^6.0.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "fs": "^0.0.1-security",
     "jimp": "^0.16.1",
     "mongoose": "^6.2.2",
     "multer": "^1.4.4",
+    "nodemon": "^2.0.15",
     "path": "^0.12.7",
     "pdf-creator-node": "^2.3.4",
     "winston": "^3.6.0"

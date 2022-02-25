@@ -11,6 +11,7 @@ const getAllUsers = async (req, res) => {
 };
 
 const getAllUsersExportPdf = async (req, res) => {
+
   try {
     const users = await userService.getAllUsers();
     const filePath = await pdf.createPdf(users, "Danh sách người dùng");
