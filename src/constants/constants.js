@@ -35,17 +35,6 @@ module.exports.DATE_TIME_FORMAT = "yyyy-MM-DD HH:mm";
 module.exports.DATE_FORMAT = "yyyy-MM-DD";
 module.exports.DATE_FORMAT_AGGREGATE = "%Y-%m-%d";
 
-//#endregion Time
-
-// Query day
-// module.exports.DAY_FILTER = {
-//   MONDAY
-// }
-
-module.exports.PRICE_FILTER = {
-  LT10: { $lt: 10 },
-  GTE10_LTE25: {
-    $and: [{ $gte: 10 }, { $lte: 25 }],
-  },
-  GT25: { $gt: 25 },
+module.exports.MAILER = {
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
 };

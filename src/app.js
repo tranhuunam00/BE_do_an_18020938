@@ -6,7 +6,8 @@ const indexRoute = require("./routes/index");
 const multer = require("./utils/multer");
 const fs = require("fs");
 require("dotenv").config();
-const googleDriveService = require("./helpers/googleDriveService");
+const googleDriveService = require("./services/googleDriveService");
+var bodyParser = require("body-parser");
 
 //datebase --mongo
 const db = require("./config/db/index");
@@ -14,6 +15,18 @@ db.connect();
 //datebase --
 
 //public-folder
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  res.header("Allow", "GET, POST, OPTIONS, PUT, DELETE");
+  next();
+});
 app.use("/public", express.static(path.join(__dirname, "./public")));
 app.use("/docs", express.static(path.join(__dirname, "docs")));
 
@@ -33,6 +46,7 @@ app.get("/uploadGoogleDrive", async (req, res) => {
       driveRedirectUri,
       driveRefreshToken
     );
+
     const finalPath = path.resolve(__dirname, "../public/hotgirl.jpg");
     const folderName = "Picture";
 
@@ -48,12 +62,12 @@ app.get("/uploadGoogleDrive", async (req, res) => {
       });
 
     console.log(folder);
-    // if (!folder) {
-    //   folder = await googleDriveService.createFolder(folderName);
-    // }
+    if (!folder) {
+      folder = await googleDriveService.createFolder(folderName);
+    }
     const done = await new Promise(function (resolve, reject) {
       googleDriveService
-        .saveFile("SpaceX", finalPath, "image/jpg", folder.id, driveClient)
+        .saveFile("456", finalPath, "image/jpg", folder.id, driveClient)
         .then((r) => {
           resolve(r);
         })
@@ -69,6 +83,23 @@ app.get("/uploadGoogleDrive", async (req, res) => {
 });
 app.get("/", (req, res) => {
   logger.debug("home");
+  const sgMail = require("@sendgrid/mail");
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const msg = {
+    to: "tranhuunam23022000@gmail.com", // Change to your recipient
+    from: "18020938@vnu.edu.vn.com", // Change to your verified sender
+    subject: "Sending with SendGrid is Fun",
+    text: "and easy to do anywhere, even with Node.js",
+    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+  };
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   res.sendFile(path.join(__dirname, "../public/home.html"));
 });
 

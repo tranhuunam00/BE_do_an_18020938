@@ -52,6 +52,8 @@ const saveFile = async (
   folderId,
   driveClient
 ) => {
+  const a = fs.createReadStream(filePath);
+  console.log(a);
   await driveClient.files.create({
     requestBody: {
       name: fileName,
@@ -60,7 +62,7 @@ const saveFile = async (
     },
     media: {
       mimeType: fileMimeType,
-      body: fs.createReadStream(filePath),
+      body: fs.createReadStream(new Buffer.from(filePath)),
     },
   });
   return "done";
