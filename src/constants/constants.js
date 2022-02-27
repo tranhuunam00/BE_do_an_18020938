@@ -38,3 +38,5 @@ module.exports.DATE_FORMAT_AGGREGATE = "%Y-%m-%d";
 module.exports.MAILER = {
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
 };
+
+module.exports.FOLDER_FILE_GOOGLR_DRIVE = "Picture";

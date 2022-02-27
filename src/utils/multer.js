@@ -1,8 +1,8 @@
 const path = require("path");
 const fs = require("fs");
-const multer = require("multer");
-
-let storageNoSave = multer.diskStorage({
+const Multer = require("multer");
+const logger = require("./logger");
+let storageNoSave = Multer.diskStorage({
   // destination: function (req, file, cb) {
   //   cb(null, "public/upload");
   // },
@@ -14,7 +14,7 @@ let storageNoSave = multer.diskStorage({
   },
 });
 
-let storageSave = multer.diskStorage({
+let storageSave = Multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/upload");
   },
@@ -26,8 +26,13 @@ let storageSave = multer.diskStorage({
   },
 });
 
-let uploadNoSave = multer({ storage: storageNoSave });
+const multer = Multer({
+  storage: storageNoSave,
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
 
-let uploadSave = multer({ storage: storageSave });
+let uploadNoSave = Multer({ storage: storageNoSave });
 
-module.exports = { uploadSave, uploadNoSave };
+let uploadSave = Multer({ storage: storageSave });
+
+module.exports = { uploadSave, uploadNoSave, multer };
