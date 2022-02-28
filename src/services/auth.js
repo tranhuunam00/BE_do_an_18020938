@@ -9,7 +9,7 @@ module.exports.generateToken = (payload) => {
 
   return token;
 };
-
+123
 module.exports.verifyToken = (token) => {
   const payload = jwt.verify(token, keys.SESSION_SECRET_KEY);
   return payload;

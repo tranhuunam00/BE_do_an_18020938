@@ -66,17 +66,12 @@ app.post(
     },
   ]),
   async (req, res) => {
-    console.log(req.files);
-
     let img;
     if (!req.files) {
       return res.json("chuwa co file");
     }
     img = req.files.img;
-
-    // const fileName = Date.now().toString() + "_" + req.file.originalname;
     const done = await upload.uploadMultiGgDrive(img);
-
     return res.json(done);
   }
 );
