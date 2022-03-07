@@ -13,17 +13,18 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    push: [
-      {
-        token: String,
-        deviceId: String,
-        os: String,
-      },
-    ],
+    // push: [
+    //   {
+    //     token: String,
+    //     deviceId: String,
+    //     os: String,
+    //   },
+    // ],
     role: {
       type: String,
       enum: UserRole,
       required: true,
+      default: "ADMIN",
     },
   },
   { timestamps: true }

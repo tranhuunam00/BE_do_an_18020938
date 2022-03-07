@@ -9,4 +9,8 @@ const createUser = async (user) => {
   return await newUser.save();
 };
 
-module.exports = { getAllUsers };
+const getOneUserByFilter = async (filter) => {
+  return await User.findOne({ filter });
+};
+
+module.exports = { getAllUsers, createUser, getOneUserByFilter };

@@ -8,13 +8,24 @@ const fs = require("fs");
 require("dotenv").config();
 const upload = require("./services/googleDriveService");
 var bodyParser = require("body-parser");
-
+const session = require("express-session");
+const httpResponses = require("./utils/httpResponses");
+const keys = require("./constants/keys");
 //datebase --mongo
 const db = require("./config/db/index");
 db.connect();
 //datebase --
 
 //public-folder
+app.set("trust proxy", 1); // trust first proxy
+app.use(
+  session({
+    secret: keys.SESSION_SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use((req, res, next) => {
@@ -29,7 +40,49 @@ app.use((req, res, next) => {
 });
 app.use("/public", express.static(path.join(__dirname, "./public")));
 app.use("/docs", express.static(path.join(__dirname, "docs")));
-
+app.use((req, res, next) => {
+  res.badRequest = (message) => {
+    return res.status(httpResponses.HTTP_STATUS_BAD_REQUEST).json({
+      success: false,
+      message: message,
+    });
+  };
+  res.notFound = (message) => {
+    return res.status(httpResponses.HTTP_STATUS_NOT_FOUND).json({
+      success: false,
+      message: message,
+    });
+  };
+  res.internalServer = (message) => {
+    return res.status(httpResponses.HTTP_STATUS_INTERNAL_ERROR).json({
+      success: false,
+      message: message,
+    });
+  };
+  res.ok = (message, data) => {
+    const responseObj = {
+      success: true,
+    };
+    message && (responseObj.message = message);
+    data && (responseObj.data = data);
+    return res.status(httpResponses.HTTP_STATUS_OK).json(responseObj);
+  };
+  res.created = (message, data) => {
+    const responseObj = {
+      success: true,
+      message: message,
+    };
+    data && (responseObj.data = data);
+    return res.status(httpResponses.HTTP_STATUS_CREATED).json(responseObj);
+  };
+  res.response = (statusCode, success, message) => {
+    return res.status(statusCode).json({
+      success: success,
+      message: message,
+    });
+  };
+  next();
+});
 //api
 
 app.use("/api", indexRoute);
