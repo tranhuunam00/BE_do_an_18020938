@@ -1,6 +1,7 @@
 const logger = require("../utils/logger");
 const constants = require("../constants/constants");
 const https = require("https");
+const Payment = require("../models/payment");
 const momoHelper = require("../helpers/momo");
 
 var partnerCode = process.env.PARTNER_CODE || "MOMOXQX320220222";
@@ -9,11 +10,11 @@ var requestId = partnerCode + new Date().getTime();
 var orderId = requestId;
 var orderInfo = constants.ORDER_INFO_MOMO || "pay with MoMo";
 // var redirectUrl =
-//   constants.REDIRECT_URL_MOMO || "http://localhost:5002/api/users/momoReturn";
+//   constants.REDIRECT_URL_MOMO ||
+//   "http://localhost:5003/api/customers/return-momo-payment";
 var ipnUrl =
-  constants.REDIRECT_URL_MOMO || "http://localhost:5002/api/users/momoReturn";
-// var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
-// var amount = "45000";
+  constants.REDIRECT_URL_MOMO ||
+  "http://localhost:5003/api/customers/return-momo-payment";
 var requestType = constants.REQUEST_TYPE_MOMO || "captureWallet";
 // var requestType = "payWithATM";
 
@@ -79,13 +80,12 @@ const paymentMomo = async (amount, redirectUrl) => {
         res.setEncoding("utf8");
 
         res.on("data", (body) => {
-          console.log(body);
+          logger.info();
 
           return resolve(JSON.parse(body));
         });
         res.on("end", () => {
           logger.debug("No more data in response.");
-          // return reject("");
         });
       });
 
@@ -104,4 +104,27 @@ const paymentMomo = async (amount, redirectUrl) => {
   }
 };
 
-module.exports = { paymentMomo };
+const getAllPaymentMomosByFilter = async (filter) => {
+  return await Payment.find(filter);
+};
+
+const createPaymentMomo = async (payment) => {
+  const newPayment = new Payment(payment);
+  return await newPayment.save();
+};
+
+const getOnePaymentMomoByFilter = async (filter) => {
+  return await Payment.findOne(filter);
+};
+
+const deleteOnePaymentByFilter = async (filter) => {
+  return await Payment.deleteOne(filter);
+};
+
+module.exports = {
+  getAllPaymentMomosByFilter,
+  createPaymentMomo,
+  getOnePaymentMomoByFilter,
+  paymentMomo,
+  deleteOnePaymentByFilter,
+};

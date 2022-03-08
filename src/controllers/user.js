@@ -11,13 +11,14 @@ const authService = require("../services/auth");
 const userService = require("../services/user");
 const securityService = require("../services/security");
 const paymentMomoService = require("../services/momo");
+const customerService = require("../services/customer");
 
 //
 const getAllUsers = async (req, res) => {
   try {
     const { user } = req.session;
     logger.debug(`[getAllUsers] -> ${JSON.stringify(user)}`);
-    const users = await userService.getAllUsers();
+    const users = await userService.getAllUsersByFilter();
     res.status(200).json(users);
   } catch (err) {
     res.status(400).send(err.message);
@@ -54,66 +55,6 @@ const sendMail = async (req, res) => {
       success: false,
       message: `${err.message}`,
     });
-  }
-};
-
-const paymentWithMomo = async (req, res) => {
-  try {
-    const token = authService.generateToken60S({ userName: "hoaquason" });
-
-    const redirect = `${constants.REDIRECT_URL_MOMO}/${JSON.stringify(token)}`;
-    console.log("momo");
-    const body = await paymentMomoService.paymentMomo(100000, redirect);
-    console.log(body);
-    if (!body.payUrl) {
-      return res.status(404).json(body);
-    }
-
-    return res.redirect(body.payUrl);
-  } catch (err) {
-    logger.error(`[paymentWithMomo] error -> ${err.message}`);
-    res.status(400).json({ message: err.message });
-  }
-};
-
-const paymentWithMomoReturn = async (req, res) => {
-  try {
-    res.json("oki");
-  } catch (err) {
-    logger.error(`[paymentWithMomo] error -> ${err.message}`);
-    res.status(400).json({ message: err.message });
-  }
-};
-
-const signUp = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      logger.debug(`[signUp] ->${httpResponses.INFOR_INVALID}`);
-      return res.badRequest(httpResponses.INFOR_INVALID);
-    }
-
-    const existUser = await userService.getOneUserByFilter({
-      email: email.toLowerCase(),
-    });
-
-    if (existUser) {
-      logger.debug(`[signUp] ->${httpResponses.EMAIL_ALREADY_EXISTS}`);
-      return res.badRequest(httpResponses.EMAIL_ALREADY_EXISTS);
-    }
-
-    const hashPassword = securityService.hashPassword(password);
-
-    const newUser = { email: email.toLowerCase(), password: hashPassword };
-    await userService.createUser(newUser);
-
-    logger.debug(`[signUp] ->${httpResponses.USER_CREATE_SUCCESSFULLY}`);
-
-    res.created(httpResponses.USER_CREATE_SUCCESSFULLY);
-  } catch (err) {
-    logger.error(`[sign-up] ->${err.message}`);
-    return res.internalServer(err.message);
   }
 };
 
@@ -169,8 +110,5 @@ module.exports = {
   getAllUsers,
   getAllUsersExportPdf,
   sendMail,
-  paymentWithMomo,
-  paymentWithMomoReturn,
-  signUp,
   login,
 };

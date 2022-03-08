@@ -1,7 +1,7 @@
 const User = require("../models/user");
 
-const getAllUsers = async (filter) => {
-  return await User.find({ filter });
+const getAllUsersByFilter = async (filter) => {
+  return await User.find(filter);
 };
 
 const createUser = async (user) => {
@@ -10,7 +10,7 @@ const createUser = async (user) => {
 };
 
 const getOneUserByFilter = async (filter) => {
-  return await User.findOne({ filter });
+  return await User.findOne(filter);
 };
 
-module.exports = { getAllUsers, createUser, getOneUserByFilter };
+module.exports = { getAllUsersByFilter, createUser, getOneUserByFilter };

@@ -1,7 +1,9 @@
 const httpResponses = require("../utils/httpResponses");
 const logger = require("../utils/logger");
-const authService = require("../services/auth");
 const enums = require("../constants/enum");
+//
+const authService = require("../services/auth");
+const customerService = require("../services/customer");
 
 const requireLogin = async (req, res, next) => {
   try {
@@ -11,36 +13,26 @@ const requireLogin = async (req, res, next) => {
       const user = authService.verifyToken(token);
 
       req.session.user = user;
-      //   switch (user.role) {
-      //     case enums.UserRole.STUDENT:
-      //       const student = await studentService.getByUserId(user._id);
-      //       if (!student) {
-      //         logger.debug(
-      //           `[requireLogin]: find student by user id -> ${httpResponses.STUDENT_NOT_FOUND}`
-      //         );
-      //         return res.status(httpResponses.HTTP_STATUS_UNAUTHORIZED).json({
-      //           success: false,
-      //           message: `${httpResponses.STUDENT_NOT_FOUND}`,
-      //         });
-      //       }
-      //       req.session.student = student;
-      //       break;
-      //     case enums.UserRole.TUTOR:
-      //       const tutor = await tutorService.getTutor({ user: user._id });
-      //       if (!tutor) {
-      //         logger.debug(
-      //           `[requireLogin]: find student by user id -> ${httpResponses.TUTOR_NOT_FOUND}`
-      //         );
-      //         return res.status(httpResponses.HTTP_STATUS_UNAUTHORIZED).json({
-      //           success: false,
-      //           message: `${httpResponses.TUTOR_NOT_FOUND}`,
-      //         });
-      //       }
-      //       req.session.tutor = tutor;
-      //       break;
-      //     default:
-      //       break;
-      //   }
+      switch (user.role) {
+        case enums.UserRole.CUSTOMER:
+          const customer = await customerService.getOneCustomerByFilter({
+            user: user._id,
+          });
+          if (!customer) {
+            logger.debug(
+              `[requireLogin]: find customer by user id -> ${httpResponses.CUSTOMER_NOT_FOUND}`
+            );
+            return res.status(httpResponses.HTTP_STATUS_UNAUTHORIZED).json({
+              success: false,
+              message: `${httpResponses.customer_NOT_FOUND}`,
+            });
+          }
+          req.session.customer = customer;
+          break;
+
+        default:
+          break;
+      }
       logger.info(`[RequireLogin]: ${JSON.stringify(user)}`);
       next();
     } else {

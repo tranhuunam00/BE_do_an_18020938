@@ -1,6 +1,6 @@
 module.exports.SALT_ROUND = 10;
 module.exports.EXPIRES_IN = 365 * 24 * 60 * 60;
-module.exports.EXPIRES_IN_60S = 60;
+module.exports.EXPIRES_IN_5MIN = 60 * 5;
 
 module.exports.EMAIL_VERIFY_CODE_LENGTH = 50;
 module.exports.EMAIL_VERIFY_CODE_TYPE = "url-safe";
@@ -42,6 +42,7 @@ module.exports.MAILER = {
 
 module.exports.FOLDER_FILE_GOOGLR_DRIVE = "Picture";
 
-module.exports.REDIRECT_URL_MOMO = "http://localhost:5002/api/users/momoReturn";
+module.exports.REDIRECT_URL_MOMO =
+  "http://localhost:5003/api/customers/return-momo-payment";
 module.exports.ORDER_INFO_MOMO = "payment with Momo";
 module.exports.REQUEST_TYPE_MOMO = "captureWallet";

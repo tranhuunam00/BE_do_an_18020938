@@ -16,13 +16,7 @@ userRoute.get(
   userController.getAllUsers
 );
 
-userRoute.get("/momo", userController.paymentWithMomo);
-
-userRoute.get("/momoReturn", userController.paymentWithMomoReturn);
-
 //post
-
-userRoute.post("/sign-up", userController.signUp);
 
 userRoute.post("/login", userController.login);
 
