@@ -64,11 +64,11 @@ const signUp = async (req, res) => {
 const incrementMoneyByMomo = async (req, res) => {
   try {
     const { customer } = req.session;
-
+    money = +money || 0;
     let { money } = req.query;
     logger.info(`[incrementMoneyByMomo] money -> ${money}`);
 
-    if (!money) {
+    if (!money || money < 1000 || money > 20000000) {
       logger.debug(`[incrementMoneyByMomo] money -> Monny invalid`);
       return res.badRequest(`Monny invalid`);
     }
@@ -78,8 +78,6 @@ const incrementMoneyByMomo = async (req, res) => {
     });
 
     logger.debug(`[incrementMoneyByMomo] wallet_id -> ${wallet._id}`);
-
-    money = +money || 0;
 
     const token = authService.generateToken({
       walletId: wallet._id,
@@ -139,7 +137,12 @@ const paymentWithMomoReturn = async (req, res) => {
           point: walletMomo.point + tokenGenerator.money,
         }
       ),
-      paymentMomoService.deleteOnePaymentByFilter({ token: token }),
+      paymentMomoService.updateOneWalletByFilter(
+        { token: token },
+        {
+          token: "",
+        }
+      ),
     ]);
 
     return res.json("ok");

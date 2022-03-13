@@ -27,10 +27,14 @@ const getAllUsers = async (req, res) => {
 
 const getAllUsersExportPdf = async (req, res) => {
   try {
-    const users = await userService.getAllUsers();
-    const filePath = await pdf.createPdf(users, "Danh sách người dùng");
-    return res.json(filePath);
+    logger.debug(`[getAllUsersExportPdf]`);
+    const users = await userService.getAllUsersByFilter();
+    const data = await pdf.createPdf(users, "Danh sách người dùng");
+    res.setHeader("Content-Length", data.length);
+    res.setHeader("Content-Type", "application/pdf");
+    return res.send(data);
   } catch (err) {
+    logger.error(err.message);
     return res.json(err);
   }
 };

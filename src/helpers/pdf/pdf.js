@@ -9,10 +9,10 @@ const createPdf = async (data, nameTitle) => {
       path.join(__dirname, "../../../public/table.html"),
       "utf-8"
     );
+
     const filename = Date.now().toString() + ".pdf";
     let arrayUser = [];
-    console.log(Object.keys(data));
-    // console.log(data);
+
     data.forEach((d) => {
       const prod = {
         name: d.name,
@@ -29,18 +29,20 @@ const createPdf = async (data, nameTitle) => {
       data: {
         user: obj,
       },
-      path: "./public/docs/" + filename,
+      // path: "./public/docs/" + filename,
+      type: "buffer",
     };
-    const done = await pdf
-      .create(document, options)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    return filename;
+    const done = await new Promise((resolve, reject) => {
+      pdf
+        .create(document, options)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((error) => {
+          reject(false);
+        });
+    });
+    return done;
   } catch (err) {
     console.log(err);
     return "";
