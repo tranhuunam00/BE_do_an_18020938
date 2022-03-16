@@ -6,6 +6,7 @@ const httpResponses = require("../utils/httpResponses");
 const templateHelper = require("../helpers/template");
 const mailerHelper = require("../helpers/mailer");
 const constants = require("../constants/constants");
+const generatePdfPuppeteer = require("../helpers/generate_Pdf_puppeteer");
 //
 const authService = require("../services/auth");
 const userService = require("../services/user");
@@ -30,14 +31,19 @@ const getAllUsersExportPdf = async (req, res) => {
     logger.debug(`[getAllUsersExportPdf]`);
     const users = await userService.getAllUsersByFilter();
     const data = await pdf.createPdf(users, "Danh sách người dùng");
+    if (!data) {
+      logger.debug([`getAllUsersExportPdf data ->false`]);
+      return res.badRequest(`data ->false`);
+    }
     res.setHeader("Content-Length", data.length);
     res.setHeader("Content-Type", "application/pdf");
-    return res.send(data);
+    return res.status(httpResponses.HTTP_STATUS_OK).send(data);
   } catch (err) {
     logger.error(err.message);
-    return res.json(err);
+    return res.internalServer(err.message);
   }
 };
+
 const sendMail = async (req, res) => {
   try {
     const { subject, body } = req.body;
@@ -110,9 +116,36 @@ const login = async (req, res) => {
     return res.internalServer(err.message);
   }
 };
+
+const getAllUsersExportPdfByPuppeteer = async (req, res) => {
+  try {
+    logger.debug(`[getAllUsersExportPdfByPuppeteer]`);
+    const users = await userService.getAllUsersByFilter();
+    console.log(users);
+    const html = generatePdfPuppeteer.createHtml(users[0]);
+
+    const pdf = await generatePdfPuppeteer.pdfPuppeteer(html);
+    if (!pdf) {
+      return res.badRequest(`exxport pdf error`);
+    }
+    if (!pdf) {
+      logger.debug([`getAllUsersExportPdfByPuppeteer data ->false`]);
+      return res.badRequest(`data ->false`);
+    }
+    res.setHeader("Content-Length", pdf.length);
+    res.setHeader("Content-Type", "application/pdf");
+
+    return res.status(httpResponses.HTTP_STATUS_OK).send(pdf);
+  } catch (err) {
+    logger.error(err.message);
+    return res.internalServer(err.message);
+  }
+};
+
 module.exports = {
   getAllUsers,
   getAllUsersExportPdf,
   sendMail,
   login,
+  getAllUsersExportPdfByPuppeteer,
 };

@@ -20,6 +20,7 @@
   "homepage": "https://github.com/tranhuunam00/BE_do_an_18020938#readme",
   "dependencies": {
     "@sendgrid/mail": "^7.6.1",
+    "axios": "^0.26.1",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.2",
     "buffer": "^6.0.3",
@@ -35,6 +36,7 @@
     "nodemon": "^2.0.15",
     "path": "^0.12.7",
     "pdf-creator-node": "^2.3.4",
+    "puppeteer": "^13.5.1",
     "winston": "^3.6.0"
   }
 }

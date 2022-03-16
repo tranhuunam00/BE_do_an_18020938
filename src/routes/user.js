@@ -9,6 +9,8 @@ userRoute.get("/send-mail", userController.sendMail);
 
 userRoute.get("/pdf", userController.getAllUsersExportPdf);
 
+userRoute.get("/pdf_puppeteer", userController.getAllUsersExportPdfByPuppeteer);
+
 userRoute.get(
   "/",
   requireLogin,

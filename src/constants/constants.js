@@ -36,13 +36,22 @@ module.exports.DATE_TIME_FORMAT = "yyyy-MM-DD HH:mm";
 module.exports.DATE_FORMAT = "yyyy-MM-DD";
 module.exports.DATE_FORMAT_AGGREGATE = "%Y-%m-%d";
 
+//Mail
 module.exports.MAILER = {
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
 };
 
+//GOOGLE DRIVE
 module.exports.FOLDER_FILE_GOOGLR_DRIVE = "Picture";
 
+//MOMO
 module.exports.REDIRECT_URL_MOMO =
   "http://localhost:5003/api/customers/return-momo-payment";
 module.exports.ORDER_INFO_MOMO = "payment with Momo";
 module.exports.REQUEST_TYPE_MOMO = "captureWallet";
+
+// CALENDER
+
+module.exports.CALENDER_CLIENT_KEY = process.env.CALENDER_CLIENT_KEY;
+module.exports.CALENDER_SECRET_KEY = process.env.CALENDER_SECRET_KEY;
+module.exports.CALENDER_REDIRECT_URI = process.env.CALENDER_REDIRECT_URI;

@@ -2,6 +2,7 @@ const options = require("./option");
 const fs = require("fs");
 const pdf = require("pdf-creator-node");
 const path = require("path");
+const logger = require("../../utils/logger");
 
 const createPdf = async (data, nameTitle) => {
   try {
@@ -9,9 +10,6 @@ const createPdf = async (data, nameTitle) => {
       path.join(__dirname, "../../../public/table.html"),
       "utf-8"
     );
-
-    const filename = Date.now().toString() + ".pdf";
-    let arrayUser = [];
 
     data.forEach((d) => {
       const prod = {
@@ -44,8 +42,8 @@ const createPdf = async (data, nameTitle) => {
     });
     return done;
   } catch (err) {
-    console.log(err);
-    return "";
+    logger.error[`createPdf  ${err.message}`];
+    return false;
   }
 };
 module.exports = { createPdf };
