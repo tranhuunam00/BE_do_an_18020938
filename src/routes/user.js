@@ -11,6 +11,8 @@ userRoute.get("/pdf", userController.getAllUsersExportPdf);
 
 userRoute.get("/pdf_puppeteer", userController.getAllUsersExportPdfByPuppeteer);
 
+userRoute.get("/pdf_html", userController.exportByHtml);
+
 userRoute.get(
   "/",
   requireLogin,

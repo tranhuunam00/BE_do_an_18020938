@@ -7,6 +7,7 @@ const templateHelper = require("../helpers/template");
 const mailerHelper = require("../helpers/mailer");
 const constants = require("../constants/constants");
 const generatePdfPuppeteer = require("../helpers/generate_Pdf_puppeteer");
+const generatePdfByHtml = require("../helpers/pdf/pdfByHtml");
 //
 const authService = require("../services/auth");
 const userService = require("../services/user");
@@ -142,10 +143,29 @@ const getAllUsersExportPdfByPuppeteer = async (req, res) => {
   }
 };
 
+const exportByHtml = async (req, res) => {
+  try {
+    logger.debug(`[exportByHtml]`);
+    const users = await userService.getAllUsersByFilter();
+    const data = await generatePdfByHtml.createPdfHtml();
+    if (!data) {
+      logger.debug([`exportByHtml data ->false`]);
+      return res.badRequest(`data ->false`);
+    }
+    res.setHeader("Content-Length", data.length);
+    res.setHeader("Content-Type", "application/pdf");
+    return res.status(httpResponses.HTTP_STATUS_OK).send(data);
+  } catch (err) {
+    logger.error(err.message);
+    return res.internalServer(err.message);
+  }
+};
+
 module.exports = {
   getAllUsers,
   getAllUsersExportPdf,
   sendMail,
   login,
   getAllUsersExportPdfByPuppeteer,
+  exportByHtml,
 };
