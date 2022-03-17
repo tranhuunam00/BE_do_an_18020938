@@ -222,7 +222,9 @@ const template = (data) => {
 const pdfPuppeteer = async (html = "") => {
   try {
     console.log("oki0");
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     console.log("oki1");
     const page = await browser.newPage();
     console.log("oki2");
