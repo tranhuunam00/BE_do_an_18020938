@@ -221,12 +221,24 @@ const template = (data) => {
 ///
 const pdfPuppeteer = async (html = "") => {
   try {
+    console.log("oki0");
     const browser = await puppeteer.launch();
+    console.log("oki1");
     const page = await browser.newPage();
+    console.log("oki2");
+
     await page.setContent(html);
+    console.log("oki3");
+
     const pdfBuffer = await page.pdf();
+    console.log("oki4");
+
     await page.close();
+    console.log("oki5");
+
     await browser.close();
+    console.log("oki6");
+
     return pdfBuffer;
   } catch (e) {
     return false;

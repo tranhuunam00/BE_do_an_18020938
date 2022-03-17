@@ -11,25 +11,15 @@ const createPdf = async (data, nameTitle) => {
       "utf-8"
     );
 
-    data.forEach((d) => {
-      const prod = {
-        name: d.name,
-        age: d.age,
-      };
-      arrayUser.push(prod);
-    });
-    const obj = {
-      userList: arrayUser,
-      nameTitle: nameTitle,
-    };
     const document = {
       html: html,
       data: {
-        user: obj,
+        user: { name: "nam" },
       },
       // path: "./public/docs/" + filename,
       type: "buffer",
     };
+
     const done = await new Promise((resolve, reject) => {
       pdf
         .create(document, options)
@@ -40,6 +30,7 @@ const createPdf = async (data, nameTitle) => {
           reject(false);
         });
     });
+
     return done;
   } catch (err) {
     logger.error[`createPdf  ${err.message}`];
