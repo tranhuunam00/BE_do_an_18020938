@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const logger = require("./utils/logger");
 const indexRoute = require("./routes/index");
 const multer = require("./utils/multer");
 const fs = require("fs");
@@ -11,6 +10,13 @@ var bodyParser = require("body-parser");
 const session = require("express-session");
 const httpResponses = require("./utils/httpResponses");
 const keys = require("./constants/keys");
+const cookieParser = require("cookie-parser");
+const passport = require("passport");
+
+require("./helpers/passport");
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 //datebase --mongo
 const db = require("./config/db/index");
 db.connect();
@@ -18,6 +24,7 @@ db.connect();
 
 //public-folder
 app.set("trust proxy", 1); // trust first proxy
+app.use(cookieParser(keys.SESSION_SECRET_KEY));
 app.use(
   session({
     secret: keys.SESSION_SECRET_KEY,
@@ -26,8 +33,7 @@ app.use(
     cookie: { secure: true },
   })
 );
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -83,29 +89,39 @@ app.use((req, res, next) => {
   };
   next();
 });
-//api
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function (user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function (obj, cb) {
+  cb(null, obj);
+});
+//api
 app.use("/api", indexRoute);
 
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/error" }),
+  function (req, res) {
+    res.redirect("/");
+  }
+);
 app.get("/", (req, res) => {
-  logger.debug("home");
-  const sgMail = require("@sendgrid/mail");
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  const msg = {
-    to: "tranhuunam23022000@gmail.com", // Change to your recipient
-    from: "18020938@vnu.edu.vn.com", // Change to your verified sender
-    subject: "Sending with SendGrid is Fun",
-    text: "and easy to do anywhere, even with Node.js",
-    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
-  };
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log("Email sent");
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  console.log(req.signedCookies);
+  res.cookie("name", "namdziui", {
+    expires: new Date(Date.now() + 900000),
+    signed: true,
+  });
+
   res.sendFile(path.join(__dirname, "../public/home.html"));
 });
 
@@ -128,4 +144,5 @@ app.post(
     return res.json(done);
   }
 );
+
 app.listen(process.env.PORT || 3000, () => {});

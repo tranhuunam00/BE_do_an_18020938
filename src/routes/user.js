@@ -24,4 +24,6 @@ userRoute.get(
 
 userRoute.post("/login", userController.login);
 
+userRoute.post("/login-google", userController.login);
+
 module.exports = userRoute;

@@ -7,6 +7,7 @@ var html = fs.readFileSync(
   path.join(__dirname, "../../../public/table.html"),
   "utf8"
 );
+
 var options = {
   format: "Letter",
   orientation: "portrait",

@@ -1,6 +1,7 @@
 const pdf = require("../helpers/pdf/pdf");
 const logger = require("../utils/logger");
 const httpResponses = require("../utils/httpResponses");
+const passport = require("passport");
 
 //
 const templateHelper = require("../helpers/template");
