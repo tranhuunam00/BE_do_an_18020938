@@ -12,7 +12,8 @@ const httpResponses = require("./utils/httpResponses");
 const keys = require("./constants/keys");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
-
+var cors = require("cors");
+app.use(cors());
 require("./helpers/passport");
 
 app.use(bodyParser.urlencoded({ extended: false }));
