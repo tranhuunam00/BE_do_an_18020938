@@ -51,8 +51,7 @@ const getTokenGoogleAPi = async (query) => {
   });
   return res;
 };
-////\
-///
+
 const createGoogleCalender = async (refreshToken) => {
   try {
     oAuth2Client.setCredentials({
