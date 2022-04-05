@@ -4,9 +4,13 @@ const logger = require("../utils/logger");
 const constants = require("../constants/constants");
 
 const getTokenGoogleAPi = async (req, res) => {
-  logger.debug("[googleController] start");
-  const result = await googleHelper.getTokenGoogleAPi(req.query);
-  res.json(result);
+  try {
+    logger.debug("[googleController] start");
+    const result = await googleHelper.getTokenGoogleAPi(req.query);
+    res.json(result);
+  } catch (err) {
+    res.json(err.message);
+  }
 };
 
 const createGoogleCalender = async (req, res) => {

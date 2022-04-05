@@ -13,7 +13,9 @@ const keys = require("./constants/keys");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 var cors = require("cors");
+const { createSocketIO } = require("./services/io");
 app.use(cors());
+const socket = require("socket.io");
 require("./helpers/passport");
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -102,7 +104,6 @@ passport.deserializeUser(function (obj, cb) {
   cb(null, obj);
 });
 //api
-app.use("/api", indexRoute);
 
 app.get(
   "/auth/google",
@@ -113,6 +114,7 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/error" }),
   function (req, res) {
+    return res.json(req.user);
     res.redirect("/");
   }
 );
@@ -146,4 +148,12 @@ app.post(
   }
 );
 
-app.listen(process.env.PORT || 3000, () => {});
+const server = app.listen(process.env.PORT || 3000, () => {});
+
+var io = createSocketIO(server);
+app.use((req, res, next) => {
+  req.io = io;
+
+  next();
+});
+app.use("/api", indexRoute);

@@ -1,7 +1,6 @@
 const UserRole = {
   ADMIN: "ADMIN",
-  STUDENT: "STUDENT",
-  TUTOR: "TUTOR",
+  SALLER: "SALLER",
   CUSTOMER_SERVICE: "CUSTOMER_SERVICE",
   CUSTOMER: "CUSTOMER",
 };
@@ -59,6 +58,13 @@ const TypePayment = {
   MOMO: "MOMO",
 };
 
+const TypeProduct = {
+  TREE_IN_DOOR: "TREE_IN_DOOR",
+  TREE_OUT_DOOR: "TREE_OUT_DOOR",
+  KITS: "KITS",
+  FERTILIZER: "FERTILIZER",
+  COURSE: "COURSE",
+};
 module.exports = {
   UserRole,
   Rate,
@@ -70,4 +76,5 @@ module.exports = {
   Language,
   StatusFlexibleLesson,
   FilterCourse,
+  TypeProduct,
 };

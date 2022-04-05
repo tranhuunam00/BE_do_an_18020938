@@ -14,6 +14,13 @@ module.exports.generateToken = (payload) => {
   return token;
 };
 
+module.exports.generateRefreshToken = (payload) => {
+  const token = jwt.sign(payload, keys.SECRET_KEY_REFRESH, {
+    expiresIn: constants.EXPIRES_IN,
+  });
+  return token;
+};
+
 module.exports.generateToken5Min = (payload) => {
   const token = jwt.sign(
     payload,
@@ -27,9 +34,28 @@ module.exports.generateToken5Min = (payload) => {
 };
 
 module.exports.verifyToken = (token) => {
-  const payload = jwt.verify(
-    token,
-    keys.SESSION_SECRET_KEY || "‘nam_do_an_18020938’"
-  );
-  return payload;
+  try {
+    const payload = jwt.verify(
+      token,
+      keys.SESSION_SECRET_KEY || "‘nam_do_an_18020938’"
+    );
+    return { success: true, payload };
+  } catch (e) {
+    return {
+      success: false,
+      payload: e.message,
+    };
+  }
+};
+
+module.exports.verifyRefreshToken = (token) => {
+  try {
+    const payload = jwt.verify(token, keys.SECRET_KEY_REFRESH);
+    return { success: true, payload };
+  } catch (e) {
+    return {
+      success: false,
+      payload: e.message,
+    };
+  }
 };

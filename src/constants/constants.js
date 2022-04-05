@@ -1,5 +1,5 @@
 module.exports.SALT_ROUND = 10;
-module.exports.EXPIRES_IN = 365 * 24 * 60 * 60;
+module.exports.EXPIRES_IN = 60 * 10;
 module.exports.EXPIRES_IN_5MIN = 60 * 5;
 
 module.exports.EMAIL_VERIFY_CODE_LENGTH = 50;
@@ -32,6 +32,9 @@ module.exports.DAY_OF_WEEKS = [
   "Friday",
   "Saturday",
 ];
+
+module.exports.PRODUCT_PRICE_DEFAULT = 1;
+module.exports.PRODUCT_AMOUNT_DEFAULT = 1;
 module.exports.DATE_TIME_FORMAT = "yyyy-MM-DD HH:mm";
 module.exports.DATE_FORMAT = "yyyy-MM-DD";
 module.exports.DATE_FORMAT_AGGREGATE = "%Y-%m-%d";
@@ -55,3 +58,17 @@ module.exports.REQUEST_TYPE_MOMO = "captureWallet";
 module.exports.CALENDER_CLIENT_KEY = process.env.CALENDER_CLIENT_KEY;
 module.exports.CALENDER_SECRET_KEY = process.env.CALENDER_SECRET_KEY;
 module.exports.CALENDER_REDIRECT_URI = process.env.CALENDER_REDIRECT_URI;
+
+module.exports.FE_LOGIN = `${process.env.FE_ENDPOINT}/login`;
+
+module.exports.FE_RESET_PASSWORD = `${process.env.FE_ENDPOINT}/reset-password`;
+
+module.exports.BE_ENDPOINT =
+  process.env.BE_ENDPOINT || "http://localhost:5003/api";
+
+module.exports.RETURN_NOTIFY = process.env.FE_ENDPOINT;
+
+(module.exports.AVATAR_DEFAULT =
+  "http://drive.google.com/uc?export=view&id=1WFK_l1Ww34zrqwbrN7Nq5XBLpqzS1pGQ"),
+  (module.exports.COVER_DEFAULT =
+    "http://drive.google.com/uc?export=view&id=1C_NsCEZlpWPBgIwlXrtAe4YA4MHh76xX");

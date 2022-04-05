@@ -3,7 +3,7 @@ const enums = require("../constants/enum");
 const constants = require("../constants/constants");
 // constants
 
-const customerSchema = mongoose.Schema(
+const sallerSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -12,9 +12,11 @@ const customerSchema = mongoose.Schema(
     },
     firstName: {
       type: String,
+      required: true,
     },
     lastName: {
       type: String,
+      required: true,
     },
     dob: String,
     gender: {
@@ -22,11 +24,11 @@ const customerSchema = mongoose.Schema(
       enum: enums.Gender,
       required: true,
     },
+    description: String,
     avatarUrl: {
       type: String,
       default: constants.AVATAR_DEFAULT,
     },
-    description: String,
     coverUrl: {
       type: String,
       default: constants.COVER_DEFAULT,
@@ -35,4 +37,4 @@ const customerSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("customers", customerSchema);
+module.exports = mongoose.model("sallers", sallerSchema);

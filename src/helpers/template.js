@@ -1,3 +1,4 @@
+const constants = require("../constants/constants");
 const sendMailForTutor = (subject, body, to) => {
   return {
     from: "tranhuunam23022000@gmail.com", // sender address
@@ -8,49 +9,29 @@ const sendMailForTutor = (subject, body, to) => {
   };
 };
 
-const sendMailForgotPassword = (subject, code, to) => {
+const sendMailForgotPassword = (code, to, subject = "Fotgot password") => {
   return {
-    from: process.env.SYSTEM_URL || "tranhuunam23022000@gmail.com", // sender address
+    from: process.env.SYSTEM_URL, // sender address
     to: to, // list of receivers
     subject: subject, // Subject line
     text: subject, // plain text body
-    html: `<p>${code}</p>`, // html body
+    html: `<p> Bạn quên mật khẩu. Xin hãy ấn vào link dưới đây để đặt lại mật khẩu!
+      <p>${constants.FE_RESET_PASSWORD}?token=${code}</p>`, // html body
   };
 };
 
-const sendMultiMailForTypeSupport = (to, bcc, title, body) => {
+const sendMailCreateUser = (code, to, subject = "Xác thực tài khoản") => {
   return {
-    personalizations: [
-      {
-        to: to,
-        bcc: bcc, // Array include object with key: email and value: email name
-      },
-    ],
     from: process.env.SYSTEM_URL || "tranhuunam23022000@gmail.com", // sender address
-    subject: `${title}`, // Subject line
-    text: `${body}`, // plain text body
-    html: `<b>${body}</b>`, // html body
-  };
-};
-
-const sendMultiMailForTypeResponse = (to, bcc, title, body) => {
-  return {
-    personalizations: [
-      {
-        to: to,
-        bcc: bcc, // Array include object with key: email and value: email name
-      },
-    ],
-    from: process.env.SYSTEM_URL || "tranhuunam23022000@gmail.com", // sender address
-    subject: `${title}`, // Subject line
-    text: `${body}`, // plain text body
-    html: `<b>${body}</b>`, // html body
+    to: to,
+    subject: subject,
+    text: subject,
+    html: `<div><p>Ấn vào link dưới để xác thực</p><p>${constants.BE_ENDPOINT}/users/confirm-register?token=${code}</p></div>`,
   };
 };
 
 module.exports = {
   sendMailForTutor,
   sendMailForgotPassword,
-  sendMultiMailForTypeSupport,
-  sendMultiMailForTypeResponse,
+  sendMailCreateUser,
 };

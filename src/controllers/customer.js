@@ -64,8 +64,9 @@ const signUp = async (req, res) => {
 const incrementMoneyByMomo = async (req, res) => {
   try {
     const { customer } = req.session;
-    money = +money || 0;
+
     let { money } = req.query;
+    money = +money || 0;
     logger.info(`[incrementMoneyByMomo] money -> ${money}`);
 
     if (!money || money < 1000 || money > 20000000) {
@@ -110,13 +111,19 @@ const paymentWithMomoReturn = async (req, res) => {
     const { token } = req.params;
 
     const tokenGenerator = authService.verifyToken(token) || "";
-    console.log(tokenGenerator);
+    if (!tokenGenerator.success) {
+      logger.debug(`[paymentWithMomoReturn] ${tokenGenerator.payload}`);
+      return res.status(httpResponses.HTTP_STATUS_UNAUTHORIZED).json({
+        success: false,
+        message: tokenGenerator.payload,
+      });
+    }
     const [paymentMomo, walletMomo] = await Promise.all([
       paymentMomoService.getOnePaymentMomoByFilter({
         token: token,
       }),
       walletService.getOneWalletByFilter({
-        _id: tokenGenerator.walletId,
+        _id: tokenGenerator.payload.walletId,
       }),
     ]);
 
@@ -124,7 +131,7 @@ const paymentWithMomoReturn = async (req, res) => {
       logger.debug([`[[paymentWithMomoReturn] paymentMomo -> notFound`]);
       return res.notFound(`paymentMomo or walletMomo -> notFound`);
     }
-    if (tokenGenerator.walletId != paymentMomo.wallet) {
+    if (tokenGenerator.payload.walletId != paymentMomo.wallet) {
       logger.debug([
         `[[paymentWithMomoReturn] walletIdGeneraByToken -> notFound`,
       ]);
@@ -134,7 +141,7 @@ const paymentWithMomoReturn = async (req, res) => {
       walletService.updateOneWalletByFilter(
         { _id: walletMomo._id },
         {
-          point: walletMomo.point + tokenGenerator.money,
+          point: walletMomo.point + tokenGenerator.payload.money,
         }
       ),
       paymentMomoService.updateOneWalletByFilter(
@@ -148,12 +155,60 @@ const paymentWithMomoReturn = async (req, res) => {
     return res.json("ok");
   } catch (err) {
     logger.error(`[paymentWithMomo] error -> ${err.message}`);
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 
+/**
+ * get all
+ */
+const getAllCustomer = async (req, res) => {
+  try {
+    res.json("oki");
+  } catch (err) {
+    logger.error(`[getAllCustomer] error -> ${err.message}`);
+    res.internalServer(err.message);
+  }
+};
+
+/**
+ * get all
+ */
+
+const getDetailsCustomer = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    logger.info(`[getDetailsCustomer]  Id  -> ${_id}`);
+    const customer = await customerService.getDetailsCustomer(_id);
+    logger.debug(`[getDetailsCustomer] ${httpResponses.SUCCESS}`);
+    res.ok(httpResponses.SUCCESS, customer);
+  } catch (e) {
+    logger.error(`[getDetailsCustomer]`);
+    return res.internalServer(e.message);
+  }
+};
+
+/**
+ * get all
+ */
+
+const getProfile = async (req, res) => {
+  try {
+    const { user } = req.session;
+    logger.info(`[getProfile]  Id  -> ${user._id}`);
+    const customer = await customerService.getProfile(user._id);
+    logger.debug(`[getProfile] ${httpResponses.SUCCESS}`);
+    res.ok(httpResponses.SUCCESS, customer);
+  } catch (e) {
+    logger.error(`[getProfile]`);
+    return res.internalServer(e.message);
+  }
+};
 module.exports = {
   signUp,
   incrementMoneyByMomo,
+  getAllCustomer,
   paymentWithMomoReturn,
+  getDetailsCustomer,
+  getProfile,
 };

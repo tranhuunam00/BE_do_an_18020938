@@ -96,8 +96,11 @@ const saveFile = async (fileName, filePath, fileMimeType, folderId) => {
     });
 };
 
-const uploadGgDrive = async (buf, fileName) => {
+const uploadGgDrive = async (file) => {
   //ten folder trn driver
+
+  const fileName = Date.now().toString() + "_" + file.originalname;
+  const buf = new Buffer.from(file.path);
   const folderName = constants.FOLDER_FILE_GOOGLR_DRIVE;
 
   let folder = await searchFolder(folderName).catch((error) => {
@@ -137,10 +140,7 @@ const uploadMultiGgDrive = async (files) => {
     return [];
   }
   files.forEach((file) => {
-    console.log(file);
-    const fileName = Date.now().toString() + "_" + file.originalname;
-    const buf = new Buffer.from(file.path);
-    promises.push(uploadGgDrive(buf, fileName));
+    promises.push(uploadGgDrive(file));
   });
   const folderName = constants.FOLDER_FILE_GOOGLR_DRIVE;
 

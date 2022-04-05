@@ -13,4 +13,22 @@ const getOneUserByFilter = async (filter) => {
   return await User.findOne(filter);
 };
 
-module.exports = { getAllUsersByFilter, createUser, getOneUserByFilter };
+const getUserByFilter = async (filter) => {
+  return await User.findOne(filter);
+};
+
+const deleteUsersByFilter = async (filter) => {
+  return await User.deleteMany(filter);
+};
+
+const updateUserByFilter = async (filter, userUpdate) => {
+  return await User.findOneAndUpdate(filter, userUpdate);
+};
+module.exports = {
+  getAllUsersByFilter,
+  createUser,
+  getOneUserByFilter,
+  getUserByFilter,
+  deleteUsersByFilter,
+  updateUserByFilter,
+};
