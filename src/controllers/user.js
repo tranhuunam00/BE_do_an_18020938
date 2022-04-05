@@ -202,6 +202,7 @@ const exportByHtml = async (req, res) => {
 const register = async (req, res) => {
   try {
     const newModel = req.body;
+    console.log(newModel);
     if (!newModel.role) {
       newModel.role = enums.UserRole.CUSTOMER;
     }
@@ -228,7 +229,7 @@ const register = async (req, res) => {
       logger.debug(`[register] error - >${httpResponses.QUERY_INVALID}`);
       return res.notFound(httpResponses.QUERY_INVALID);
     }
-
+    console.log("oki");
     const existedUser = await userService.getUserByFilter({
       email: newModel.email,
     });
@@ -237,18 +238,22 @@ const register = async (req, res) => {
 
       return res.badRequest(httpResponses.USER_EXISTED);
     }
-    switch (existedUser.role) {
-      case enums.UserRole.CUSTOMER: {
-        await customerService.deleteCustomer({ user: existedUser._id });
-        break;
+    if (existedUser) {
+      switch (existedUser.role) {
+        case enums.UserRole.CUSTOMER: {
+          console.log("Đã xóa");
+          await customerService.deleteCustomer({ user: existedUser._id });
+          break;
+        }
+        case enums.UserRole.SALLER: {
+          await sallerService.deleteSaller({ user: existedUser._id });
+          break;
+        }
       }
-      case enums.UserRole.SALLER: {
-        await sallerService.deleteSaller({ user: existedUser._id });
-        break;
-      }
+      logger.debug(`[createUser] delete old`);
     }
     await userService.deleteUsersByFilter({ email: newModel.email });
-    logger.debug(`[createUser] delete old`);
+
     const hashPassword = securityService.hashPassword(newModel.password);
     newModel.password = hashPassword;
     const newUser = await userService.createUser(newModel);
