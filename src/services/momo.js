@@ -4,8 +4,8 @@ const https = require("https");
 const Payment = require("../models/payment");
 const momoHelper = require("../helpers/momo");
 
-var partnerCode = process.env.PARTNER_CODE || "MOMOXQX320220222";
-var accessKey = process.env.ACCESS_KEY || "NSHbkxIc8kM3XXHh";
+var partnerCode = process.env.PARTNER_CODE;
+var accessKey = process.env.ACCESS_KEY;
 var requestId = partnerCode + new Date().getTime();
 var orderId = requestId;
 var orderInfo = constants.ORDER_INFO_MOMO || "pay with MoMo";

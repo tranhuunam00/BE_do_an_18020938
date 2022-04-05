@@ -1,4 +1,4 @@
-var secretkey = process.env.SECRET_KEY || "oZaIOJ7il4rdMN4JgbDp1LhNLuZrcl9t";
+var secretkey = process.env.SECRET_KEY;
 const crypto = require("crypto");
 
 const createHash = (data) => {

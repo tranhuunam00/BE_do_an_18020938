@@ -19,10 +19,10 @@ function sortObject(obj) {
 }
 
 const createPaymentVnPay = (data) => {
-  var ipAddr = "http://localhost:5003";
+  var ipAddr = process.env.BE_ENDPOINT;
   var vnp_Params = {};
-  var tmnCode = "5PI54HGB";
-  var secretKey = "JAJPSPIAIPKJBFYIOWVHJGOTOWQUPTCA";
+  var tmnCode = process.env.VNP_TMN_CODE;
+  var secretKey = process.env.VNP_HASH_SECRET;
   var vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
   var returnUrl = "http://localhost:8888/order/vnpay_return";
   if (data.language === null || data.language === "") {

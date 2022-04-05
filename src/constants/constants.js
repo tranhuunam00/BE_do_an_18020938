@@ -64,7 +64,7 @@ module.exports.FE_LOGIN = `${process.env.FE_ENDPOINT}/login`;
 module.exports.FE_RESET_PASSWORD = `${process.env.FE_ENDPOINT}/reset-password`;
 
 module.exports.BE_ENDPOINT =
-  process.env.BE_ENDPOINT || "http://localhost:5003/api";
+  process.env.BE_ENDPOINT + "/api" || "http://localhost:5003/api";
 
 module.exports.RETURN_NOTIFY = process.env.FE_ENDPOINT;
 
