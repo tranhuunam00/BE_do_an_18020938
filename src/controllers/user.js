@@ -15,7 +15,7 @@ const userService = require("../services/user");
 const securityService = require("../services/security");
 const paymentMomoService = require("../services/momo");
 const customerService = require("../services/customer");
-const { ioEmitAll } = require("./../services/io");
+
 const googleDriveService = require("./../services/googleDriveService");
 const sallerService = require("./../services/sallers");
 const tokenService = require("./../services/token");
@@ -75,7 +75,6 @@ const sendMail = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    ioEmitAll(req.io);
     const { email, password } = req.body;
     console.log(email);
     if (!email || !password) {
@@ -122,7 +121,22 @@ const login = async (req, res) => {
         user.firstName = customer.firstName;
         user.avatarUrl = customer.avatarUrl;
         user.gender = customer.gender;
+        user.description = customer.description;
         user.dob = customer.dob;
+        user.customerId = customer._id;
+        break;
+      case enums.UserRole.SALLER:
+        const saller = await sallerService.getOneSallerByFilter({
+          user: existedUser._id,
+        });
+        user.lastName = saller.lastName;
+        user.firstName = saller.firstName;
+        user.avatarUrl = saller.avatarUrl;
+        user.gender = saller.gender;
+        user.description = saller.description;
+        user.dob = saller.dob;
+        user.sallerId = saller._id;
+
         break;
     }
 

@@ -9,8 +9,10 @@ const createSocketIO = (server) => {
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   });
   io.on("connection", function (socket) {
+    socket.emit("connected", "connected");
     logger.debug(`[connection] ${httpResponses.SUCCESS}`);
     onTest(io, socket);
+    onDisconnect(io, socket);
   });
   return io;
 };
@@ -21,8 +23,12 @@ const onTest = (io, socket) => {
     io.emit("return", data);
   });
 };
-const ioEmitAll = (io) => {
-  return io.emit("return", "con ga con");
+
+const onDisconnect = (io, socket) => {
+  return socket.on("disconnect", function (data) {
+    logger.debug(`[disconnect] ${httpResponses.SUCCESS}`);
+    socket.disconnect();
+  });
 };
 
-module.exports = { createSocketIO, ioEmitAll };
+module.exports = { createSocketIO };

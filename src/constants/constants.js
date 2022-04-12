@@ -72,3 +72,7 @@ module.exports.RETURN_NOTIFY = process.env.FE_ENDPOINT;
   "http://drive.google.com/uc?export=view&id=1WFK_l1Ww34zrqwbrN7Nq5XBLpqzS1pGQ"),
   (module.exports.COVER_DEFAULT =
     "http://drive.google.com/uc?export=view&id=1C_NsCEZlpWPBgIwlXrtAe4YA4MHh76xX");
+
+module.exports.FILTER_DEFAULT_ALL_PRODUCT = {
+  pagination: { _page: 1, _limit: 20 },
+};

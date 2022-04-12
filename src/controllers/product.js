@@ -57,13 +57,23 @@ const createProduct = async (req, res) => {
 const getALlProduct = async (req, res) => {
   try {
     const { sallerId } = req.params;
+
     logger.info(`[getALlProduct] sallerId-> ${sallerId}`);
-    const { _page, _limit, _textSearch } = req.query;
+    const {
+      _page,
+      _limit,
+      _textSearch,
+      _typeProduct,
+      _minMoney,
+      _maxMoney,
+      _sortMoney,
+      _sortTime,
+    } = req.query;
 
     const existSaller = await sallerService.getOneSallerByFilter({
       _id: sallerId,
     });
-
+    console.log(_sortTime);
     if (!existSaller) {
       logger.debug(`[getALlProduct] -> ${httpResponses.SALLER_NOT_FOUND}`);
       return res.notFound(httpResponses.SALLER_NOT_FOUND);
@@ -77,13 +87,49 @@ const getALlProduct = async (req, res) => {
     filter.pagination = pagination;
     filter.sallerId = sallerId;
     filter._textSearch = _textSearch;
+    filter._minMoney = +_minMoney;
+    filter._maxMoney = +_maxMoney;
+    filter._sortTime = _sortTime;
+    filter._sortMoney = +_sortMoney;
+
+    console.log(filter);
+    if (_typeProduct == "ALL") {
+      const productArray = [];
+
+      Object.keys(enums.TypeProduct).forEach((key) => {
+        const filterNew = constants.FILTER_DEFAULT_ALL_PRODUCT;
+        filterNew.sallerId = sallerId;
+        filterNew.typeProduct = enums.TypeProduct[key];
+        productArray.push(productService.getALlProduct(filterNew));
+      });
+
+      const result = await Promise.all(productArray);
+      const products = {};
+      Object.keys(enums.TypeProduct).forEach((key, index) => {
+        products[key] = {
+          total: result[index].total,
+          products: result[index].products,
+        };
+      });
+
+      logger.debug(`[getALlProduct]  All -> ${httpResponses.SUCCESS}`);
+      return res.ok(httpResponses.SUCCESS, products);
+    }
+
+    if (_typeProduct) {
+      filter.typeProduct = Object.values(enums.TypeProduct).some(
+        (v) => v === _typeProduct
+      )
+        ? _typeProduct
+        : null;
+    }
 
     const { products, count, total } = await productService.getALlProduct(
       filter
     );
 
     pagination._total = count;
-    
+
     logger.debug(`[getALlProduct] -> ${httpResponses.SUCCESS}`);
     res.ok(httpResponses.SUCCESS, { products, pagination, total });
   } catch (err) {
