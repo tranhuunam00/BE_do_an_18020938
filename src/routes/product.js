@@ -12,7 +12,7 @@ productRoute.post(
   checkPermissions(enums.UserRole.SALLER),
   multer.fields([
     {
-      name: "img",
+      name: "imgProduct",
     },
   ]),
   productController.createProduct

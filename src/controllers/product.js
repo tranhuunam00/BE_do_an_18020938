@@ -16,7 +16,7 @@ const createProduct = async (req, res) => {
     const { saller } = req.session;
     logger.debug(`[createProduct] sallerId = ${saller._id}`);
     const newModel = req.body;
-    console.log(newModel);
+
     if (
       !newModel.name ||
       !newModel.description ||
@@ -36,10 +36,15 @@ const createProduct = async (req, res) => {
       +newModel.amount > 0 ? newModel.amount : constants.PRODUCT_AMOUNT_DEFAULT;
     newModel.saller = saller._id;
 
-    if (req.files && req.files.img && req.files.img[0]) {
-      const imgUrl = await googleDriveService.uploadMultiGgDrive(req.files.img);
+    if (req.files && req.files.imgProduct && req.files.imgProduct[0]) {
+      const imgUrl = await googleDriveService.uploadMultiGgDrive(
+        req.files.imgProduct
+      );
       newModel.imgUrl = imgUrl;
     }
+
+    console.log(newModel);
+
     await productService.createProduct(newModel);
 
     logger.debug(`[createProduct] -> ${httpResponses.SUCCESS}`);
@@ -91,7 +96,9 @@ const getALlProduct = async (req, res) => {
     filter._maxMoney = +_maxMoney;
     filter._sortTime = _sortTime;
     filter._sortMoney = +_sortMoney;
-
+    if (filter._minMoney === 0) {
+      filter._minMoney = 0.1;
+    }
     console.log(filter);
     if (_typeProduct == "ALL") {
       const productArray = [];

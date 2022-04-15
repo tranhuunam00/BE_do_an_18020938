@@ -33,8 +33,8 @@ const getALlProduct = async (filter) => {
       $match: {
         $expr: {
           $and: [
-            { $gte: ["$price", filter._minMoney] },
-            { $lte: ["$price", filter._maxMoney] },
+            { $gte: ["$price", +filter._minMoney] },
+            { $lte: ["$price", +filter._maxMoney] },
           ],
         },
       },
