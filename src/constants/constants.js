@@ -59,7 +59,7 @@ module.exports.CALENDER_CLIENT_KEY = process.env.CALENDER_CLIENT_KEY;
 module.exports.CALENDER_SECRET_KEY = process.env.CALENDER_SECRET_KEY;
 module.exports.CALENDER_REDIRECT_URI = process.env.CALENDER_REDIRECT_URI;
 
-module.exports.FE_LOGIN = `${process.env.FE_ENDPOINT}/login`;
+module.exports.FE_LOGIN = `${process.env.FE_ENDPOINT}/login/success`;
 
 module.exports.FE_RESET_PASSWORD = `${process.env.FE_ENDPOINT}/reset-password`;
 

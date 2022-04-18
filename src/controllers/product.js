@@ -257,6 +257,9 @@ const updateProduct = async (req, res) => {
       });
 
       newModel.imgUrl = newModel.imgUrl.concat(imgUrlDriver);
+
+      console.log(newModel.imgUr);
+
       if (checkExistUrlImg) {
         logger.debug(
           `[updateProduct] -> ${httpResponses.PRODUCT_IMG_URL_NOT_FOUND}`
@@ -270,7 +273,10 @@ const updateProduct = async (req, res) => {
         return res.notFound(httpResponses.PRODUCT_IMG_URL_LIMIT_6);
       }
     }
-
+    if (newModel.imgUrl === "") {
+      newModel.imgUrl = [];
+    }
+    console.log(newModel);
     const updateP = await productService.updateProduct(
       {
         saller: saller._id,
@@ -278,7 +284,7 @@ const updateProduct = async (req, res) => {
       },
       newModel
     );
-    
+
     logger.debug(`[updateProduct] -> ${httpResponses.SUCCESS}`);
     res.created(httpResponses.SUCCESS);
   } catch (err) {
