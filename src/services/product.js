@@ -7,6 +7,14 @@ const createProduct = async (product) => {
   return await newProduct.save();
 };
 
+const updateProduct = async (filter, product) => {
+  return await Product.findOneAndUpdate(filter, product);
+};
+
+const getProduct = async (filter, product) => {
+  return await Product.findOne(filter);
+};
+
 const getALlProduct = async (filter) => {
   const pipeline = [{ $match: {} }];
   if (filter.sallerId) {
@@ -65,4 +73,49 @@ const getALlProduct = async (filter) => {
 
   return { products, count: doc.length, total: docs.length };
 };
-module.exports = { createProduct, getALlProduct };
+
+const getDetailProduct = async (productId) => {
+  const product = await Product.aggregate([
+    { $match: { _id: mongoose.Types.ObjectId(productId) } },
+    lookup("sallers", "saller", "_id", "saller"),
+    unwind("$saller"),
+    lookup("reviews", "_id", "product", "review"),
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        price: 1,
+        description: 1,
+        amount: 1,
+        createAt: 1,
+        type: 1,
+        saller: {
+          _id: 1,
+          firstName: 1,
+          lastName: 1,
+          createdAt: 1,
+        },
+        review: 1,
+        imgUrl: 1,
+        totalReviews: {
+          $cond: [
+            { $gt: [{ $size: "$review" }, 0] },
+            {
+              $divide: [{ $sum: "$review.star" }, { $size: "$review" }],
+            },
+            -1,
+          ],
+        },
+      },
+    },
+  ]);
+  const res = product.length > 0 ? product[0] : null;
+  return res;
+};
+module.exports = {
+  createProduct,
+  getALlProduct,
+  getDetailProduct,
+  updateProduct,
+  getProduct,
+};

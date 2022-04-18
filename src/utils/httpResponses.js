@@ -56,3 +56,10 @@ module.exports.TOKEN_VERIFIED_SUCCESS = "Token_verify_success";
 //saller
 module.exports.SALLER_NOT_FOUND = "SALLER_NOT_FOUND";
 module.exports.SALLER_EXISTED = "SALLER_EXISTED";
+
+//product
+module.exports.PRODUCT_NOT_FOUND = "PRODUCT_NOT_FOUND";
+module.exports.PRODUCT_IMG_URL_NOT_FOUND = "PRODUCT_IMG_URL_NOT_FOUND";
+module.exports.PRODUCT_IMG_URL_LIMIT_6 = "PRODUCT_IMG_URL_LIMIT_6";
+
+module.exports.PRODUCT_EXISTED = "PRODUCT_EXISTED";

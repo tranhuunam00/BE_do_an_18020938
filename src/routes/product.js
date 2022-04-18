@@ -1,6 +1,10 @@
 const express = require("express");
 const productRoute = express.Router();
-const { requireLogin, checkPermissions } = require("../middleware/permission");
+const {
+  requireLogin,
+  checkPermissions,
+  checkLogin,
+} = require("../middleware/permission");
 const enums = require("../constants/enum");
 const { multer } = require("../utils/multer");
 
@@ -17,7 +21,20 @@ productRoute.post(
   ]),
   productController.createProduct
 );
+productRoute.get("/detail/:productId", productController.getDetailProduct);
 
-productRoute.get("/:sallerId", productController.getALlProduct);
+productRoute.get("/:sallerId", productController.getALlProductBySallerId);
+
+productRoute.put(
+  "/:productId",
+  requireLogin,
+  checkPermissions(enums.UserRole.SALLER),
+  multer.fields([
+    {
+      name: "imgProduct",
+    },
+  ]),
+  productController.updateProduct
+);
 
 module.exports = productRoute;

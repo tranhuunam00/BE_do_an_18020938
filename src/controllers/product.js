@@ -23,6 +23,13 @@ const createProduct = async (req, res) => {
       !newModel.price ||
       !newModel.amount ||
       !newModel.type ||
+      newModel.name?.length < 5 ||
+      newModel.description?.length < 10 ||
+      +newModel.price < -1 ||
+      +newModel.amount < -1 ||
+      newModel.saller ||
+      newModel._id ||
+      !Number.isInteger(amount) ||
       !Object.keys(enums.TypeProduct).some((t) => t === newModel.type)
     ) {
       logger.debug(`[createProduct] -> ${httpResponses.QUERY_INVALID}`);
@@ -43,8 +50,6 @@ const createProduct = async (req, res) => {
       newModel.imgUrl = imgUrl;
     }
 
-    console.log(newModel);
-
     await productService.createProduct(newModel);
 
     logger.debug(`[createProduct] -> ${httpResponses.SUCCESS}`);
@@ -59,7 +64,7 @@ const createProduct = async (req, res) => {
  * get ALl Product
  *
  */
-const getALlProduct = async (req, res) => {
+const getALlProductBySallerId = async (req, res) => {
   try {
     const { sallerId } = req.params;
 
@@ -78,7 +83,7 @@ const getALlProduct = async (req, res) => {
     const existSaller = await sallerService.getOneSallerByFilter({
       _id: sallerId,
     });
-    console.log(_sortTime);
+
     if (!existSaller) {
       logger.debug(`[getALlProduct] -> ${httpResponses.SALLER_NOT_FOUND}`);
       return res.notFound(httpResponses.SALLER_NOT_FOUND);
@@ -99,7 +104,7 @@ const getALlProduct = async (req, res) => {
     if (filter._minMoney === 0) {
       filter._minMoney = 0.1;
     }
-    console.log(filter);
+
     if (_typeProduct == "ALL") {
       const productArray = [];
 
@@ -151,12 +156,154 @@ const getALlProduct = async (req, res) => {
  */
 const getDetailProduct = async (req, res) => {
   try {
-    logger.debug(`[getALlProduct] -> ${httpResponses.SUCCESS}`);
-    res.created(httpResponses.SUCCESS);
+    const { productId } = req.params;
+    logger.info(`[getDetailProduct] productId: ${productId}`);
+
+    const product = await productService.getDetailProduct(productId);
+
+    if (!product) {
+      logger.debug(`[getDetailProduct] -> ${httpResponses.PASSWORD_NOT_FOUND}`);
+      return res.notFound(httpResponses.PASSWORD_NOT_FOUND);
+    }
+
+    if (req.files && req.files.imgProduct && req.files.imgProduct[0]) {
+      const imgUrl = await googleDriveService.uploadMultiGgDrive(
+        req.files.imgProduct
+      );
+      newModel.imgUrl = imgUrl;
+    }
+
+    logger.debug(`[getDetailProduct] -> ${httpResponses.SUCCESS}`);
+
+    res.ok(httpResponses.SUCCESS, product);
   } catch (err) {
-    logger.error(`[getAllCustomer] error -> ${err.message}`);
+    logger.error(`[getDetailProduct] error -> ${err.message}`);
     res.internalServer(err.message);
   }
 };
 
-module.exports = { createProduct, getALlProduct, getDetailProduct };
+/********************************
+ * update Product
+ *
+ */
+const updateProduct = async (req, res) => {
+  try {
+    const newModel = req.body;
+    const { productId } = req.params;
+    const { saller } = req.session;
+
+    logger.debug(`[updateProduct] productId =->${productId}`);
+    logger.debug(`[updateProduct] sallerId =->${saller._id}`);
+
+    if (newModel.imgUrl) {
+      newModel.imgUrl = newModel.imgUrl.split(",");
+    }
+    console.log(newModel);
+    if (
+      newModel.name?.length < 5 ||
+      newModel.description?.length < 10 ||
+      (newModel.price && +newModel.price < 0) ||
+      (newModel.amount && +newModel.amount < 0) ||
+      (newModel.amount && !Number.isInteger(+newModel.amount)) ||
+      (newModel.type &&
+        !Object.keys(enums.TypeProduct).includes(newModel.type)) ||
+      (newModel.imgUrl && !Array.isArray(newModel.imgUrl))
+    ) {
+      logger.debug(`[updateProduct] -> ${httpResponses.QUERY_INVALID}`);
+      return res.badRequest(httpResponses.QUERY_INVALID);
+    }
+    if (newModel._id) {
+      delete newModel._id;
+    }
+    if (newModel.saller) {
+      delete newModel.saller;
+    }
+    if (newModel.price) {
+      newModel.price = +newModel.price;
+    }
+    if (newModel.amount) {
+      newModel.amount = +newModel.amount;
+    }
+    const currentProduct = await productService.getProduct({
+      saller: saller._id,
+      _id: productId,
+    });
+
+    if (!currentProduct) {
+      logger.debug(`[updateProduct] -> ${httpResponses.PRODUCT_NOT_FOUND}`);
+      return res.notFound(httpResponses.PRODUCT_NOT_FOUND);
+    }
+
+    if (req.files && req.files.imgProduct && req.files.imgProduct[0]) {
+      const imgUrlDriver = await googleDriveService.uploadMultiGgDrive(
+        req.files.imgProduct
+      );
+      let checkExistUrlImg = false;
+
+      newModel.imgUrl.forEach((url, index) => {
+        if (url !== "false") {
+          if (!currentProduct.imgUrl.includes(url)) {
+            checkExistUrlImg = true;
+          }
+        }
+        if (url === "false" && imgUrlDriver?.length > 0) {
+          newModel.imgUrl[index] = imgUrlDriver[0];
+          url = imgUrlDriver[0];
+          imgUrlDriver.shift();
+        }
+        if (url === "false" && imgUrlDriver?.length === 0) {
+          newModel.imgUrl.splice(index, 1);
+        }
+      });
+
+      newModel.imgUrl = newModel.imgUrl.concat(imgUrlDriver);
+      if (checkExistUrlImg) {
+        logger.debug(
+          `[updateProduct] -> ${httpResponses.PRODUCT_IMG_URL_NOT_FOUND}`
+        );
+        return res.notFound(httpResponses.PRODUCT_IMG_URL_NOT_FOUND);
+      }
+      if (newModel.imgUrl.length > 6) {
+        logger.debug(
+          `[updateProduct] -> ${httpResponses.PRODUCT_IMG_URL_LIMIT_6}`
+        );
+        return res.notFound(httpResponses.PRODUCT_IMG_URL_LIMIT_6);
+      }
+    }
+
+    const updateP = await productService.updateProduct(
+      {
+        saller: saller._id,
+        _id: productId,
+      },
+      newModel
+    );
+    
+    logger.debug(`[updateProduct] -> ${httpResponses.SUCCESS}`);
+    res.created(httpResponses.SUCCESS);
+  } catch (err) {
+    logger.error(`[updateProduct] error -> ${err.message}`);
+    res.internalServer(err.message);
+  }
+};
+
+// /********************************
+//  * get Detail Product
+//  *
+//  */
+//  const getDetailProduct = async (req, res) => {
+//   try {
+//     logger.debug(`[getALlProduct] -> ${httpResponses.SUCCESS}`);
+//     res.created(httpResponses.SUCCESS);
+//   } catch (err) {
+//     logger.error(`[getAllCustomer] error -> ${err.message}`);
+//     res.internalServer(err.message);
+//   }
+// };
+
+module.exports = {
+  createProduct,
+  getALlProductBySallerId,
+  getDetailProduct,
+  updateProduct,
+};
