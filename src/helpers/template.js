@@ -26,7 +26,7 @@ const sendMailCreateUser = (code, to, subject = "Xác thực tài khoản") => {
     to: to,
     subject: subject,
     text: subject,
-    html: `<div><p>Ấn vào link dưới để xác thực</p><p>${constants.BE_ENDPOINT}/api/users/confirm-register?token=${code}</p></div>`,
+    html: `<div><p>Ấn vào link dưới để xác thực</p><p>${constants.BE_ENDPOINT}/users/confirm-register?token=${code}</p></div>`,
   };
 };
 
