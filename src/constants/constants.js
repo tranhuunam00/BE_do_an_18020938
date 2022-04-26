@@ -49,7 +49,7 @@ module.exports.FOLDER_FILE_GOOGLR_DRIVE = "Picture";
 
 //MOMO
 module.exports.REDIRECT_URL_MOMO =
-  "http://localhost:5003/api/customers/return-momo-payment";
+  process.env.BE_ENDPOINT + "/api/customers/return-momo-payment";
 module.exports.ORDER_INFO_MOMO = "payment with Momo";
 module.exports.REQUEST_TYPE_MOMO = "captureWallet";
 
@@ -76,3 +76,5 @@ module.exports.RETURN_NOTIFY = process.env.FE_ENDPOINT;
 module.exports.FILTER_DEFAULT_ALL_PRODUCT = {
   pagination: { _page: 1, _limit: 20 },
 };
+
+module.exports.TRANSACTION_ID_MOMO_DEFAULT = "NOT_TRANSACTION_ID";

@@ -27,7 +27,6 @@ const unwind = (path, preserveNullAndEmptyArrays = false) => {
 module.exports = {
   checkRole,
   checkGender,
-
   lookup,
   unwind,
 };

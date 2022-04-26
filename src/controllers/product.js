@@ -64,7 +64,7 @@ const createProduct = async (req, res) => {
  * get ALl Product
  *
  */
-const getALlProductBySallerId = async (req, res) => {
+const getALlProduct = async (req, res) => {
   try {
     const { sallerId } = req.params;
 
@@ -80,13 +80,15 @@ const getALlProductBySallerId = async (req, res) => {
       _sortTime,
     } = req.query;
 
-    const existSaller = await sallerService.getOneSallerByFilter({
-      _id: sallerId,
-    });
+    if (sallerId) {
+      const existSaller = await sallerService.getOneSallerByFilter({
+        _id: sallerId,
+      });
 
-    if (!existSaller) {
-      logger.debug(`[getALlProduct] -> ${httpResponses.SALLER_NOT_FOUND}`);
-      return res.notFound(httpResponses.SALLER_NOT_FOUND);
+      if (!existSaller) {
+        logger.debug(`[getALlProduct] -> ${httpResponses.SALLER_NOT_FOUND}`);
+        return res.notFound(httpResponses.SALLER_NOT_FOUND);
+      }
     }
 
     const filter = {};
@@ -162,8 +164,8 @@ const getDetailProduct = async (req, res) => {
     const product = await productService.getDetailProduct(productId);
 
     if (!product) {
-      logger.debug(`[getDetailProduct] -> ${httpResponses.PASSWORD_NOT_FOUND}`);
-      return res.notFound(httpResponses.PASSWORD_NOT_FOUND);
+      logger.debug(`[getDetailProduct] -> ${httpResponses.PRODUCT_NOT_FOUND}`);
+      return res.notFound(httpResponses.PRODUCT_NOT_FOUND);
     }
 
     if (req.files && req.files.imgProduct && req.files.imgProduct[0]) {
@@ -309,7 +311,7 @@ const updateProduct = async (req, res) => {
 
 module.exports = {
   createProduct,
-  getALlProductBySallerId,
+  getALlProduct,
   getDetailProduct,
   updateProduct,
 };

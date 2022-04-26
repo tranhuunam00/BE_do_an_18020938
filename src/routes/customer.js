@@ -10,6 +10,21 @@ const customerController = require("../controllers/customer");
 //post
 
 customerRoute.post("/sign-up", customerController.signUp);
+
+customerRoute.post(
+  "/order",
+  requireLogin,
+  checkPermissions(enums.UserRole.CUSTOMER),
+  customerController.createOrder
+);
+
+customerRoute.post(
+  "/cart",
+  requireLogin,
+  checkPermissions(enums.UserRole.CUSTOMER),
+  customerController.createCartCustomer
+);
+
 customerRoute.get(
   "/increment-momo",
   //   requireLogin,
@@ -21,6 +36,13 @@ customerRoute.get(
   customerController.paymentWithMomoReturn
 );
 
+customerRoute.get(
+  "/cart",
+  requireLogin,
+  checkPermissions(enums.UserRole.CUSTOMER),
+  customerController.getCartsCustomer
+);
+
 customerRoute.get("/profile", requireLogin, customerController.getProfile);
 
 customerRoute.get("/:_id", customerController.getDetailsCustomer);
@@ -30,6 +52,20 @@ customerRoute.get(
   requireLogin,
   checkPermissions(enums.UserRole.CUSTOMER),
   customerController.getAllCustomer
+);
+
+customerRoute.put(
+  "/cart",
+  requireLogin,
+  checkPermissions(enums.UserRole.CUSTOMER),
+  customerController.updateCartCustomer
+);
+
+customerRoute.delete(
+  "/cart",
+  requireLogin,
+  checkPermissions(enums.UserRole.CUSTOMER),
+  customerController.deleteCartCustomer
 );
 
 module.exports = customerRoute;

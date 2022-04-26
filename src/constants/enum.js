@@ -56,6 +56,7 @@ const FilterCourse = {
 
 const TypePayment = {
   MOMO: "MOMO",
+  DIRECT: "DIRECT",
 };
 
 const TypeProduct = {
@@ -64,6 +65,26 @@ const TypeProduct = {
   KITS: "KITS",
   FERTILIZER: "FERTILIZER",
   COURSE: "COURSE",
+};
+
+const StatusPayment = {
+  AWAIT_MOMO: "AWAIT_MOMO",
+  MOMO: "AWAIT_MOMO",
+
+  UNPAID: "UNPAID",
+  PAID: "PAID",
+  SUCCESS: "SUCCESS",
+};
+
+const StatusOrder = {
+  PREPARE: "PREPARE",
+  CONFIRM: "CONFIRM",
+  DELIVERY_SHIP: "DELIVERY_SHIP",
+  SHIP: "SHIP",
+  REVEICE: "REVEICE",
+  SUCCESS: "SUCCESS",
+  CANCEL: "CANCEL",
+  NOT_CONFIRMED: "NOT_CONFIRMED",
 };
 module.exports = {
   UserRole,
@@ -77,4 +98,6 @@ module.exports = {
   StatusFlexibleLesson,
   FilterCourse,
   TypeProduct,
+  StatusPayment,
+  StatusOrder,
 };

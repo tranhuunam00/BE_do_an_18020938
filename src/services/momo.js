@@ -6,8 +6,7 @@ const momoHelper = require("../helpers/momo");
 
 var partnerCode = process.env.PARTNER_CODE;
 var accessKey = process.env.ACCESS_KEY;
-var requestId = partnerCode + new Date().getTime();
-var orderId = requestId;
+
 var orderInfo = constants.ORDER_INFO_MOMO || "pay with MoMo";
 // var redirectUrl =
 //   constants.REDIRECT_URL_MOMO ||
@@ -20,8 +19,10 @@ var requestType = constants.REQUEST_TYPE_MOMO || "captureWallet";
 
 var extraData = ""; //pass empty value if your merchant does not have stores
 
-const paymentMomo = async (amount, redirectUrl) => {
+const paymentMomo = async (amount, redirectUrl, requestId) => {
   try {
+    // var requestId = partnerCode + new Date().getTime();
+    var orderId = requestId;
     const url = await new Promise((resolve, reject) => {
       var rawSignature =
         "accessKey=" +
@@ -47,7 +48,6 @@ const paymentMomo = async (amount, redirectUrl) => {
 
       const signature = momoHelper.createHash(rawSignature);
 
-      console.log("hiih");
       const requestBody = JSON.stringify({
         partnerCode: partnerCode,
         accessKey: accessKey,

@@ -47,6 +47,7 @@ app.use((req, res, next) => {
   res.header("Allow", "GET, POST, OPTIONS, PUT, DELETE");
   next();
 });
+
 app.use("/public", express.static(path.join(__dirname, "./public")));
 app.use("/docs", express.static(path.join(__dirname, "docs")));
 app.use((req, res, next) => {

@@ -28,6 +28,8 @@ module.exports.USER_NOT_FOUND = "USER_NOT_FOUND";
 module.exports.PASSWORD_NOT_MATCH = "PASSWORD_NOT_MATCH";
 module.exports.USER_NOT_CONFIRM = "USER_NOT_CONFIRM";
 //customer
+module.exports.CART_NOT_FOUND = "CART_NOT_FOUND";
+module.exports.CART_EXISTED = "CART_EXISTED";
 
 module.exports.CUSTOMER_NOT_FOUND = "CUSTOMER_NOT_FOUND";
 
@@ -63,3 +65,8 @@ module.exports.PRODUCT_IMG_URL_NOT_FOUND = "PRODUCT_IMG_URL_NOT_FOUND";
 module.exports.PRODUCT_IMG_URL_LIMIT_6 = "PRODUCT_IMG_URL_LIMIT_6";
 
 module.exports.PRODUCT_EXISTED = "PRODUCT_EXISTED";
+
+//payment
+module.exports.PAYMENT_EXISTING = "PAYMENT_EXISTING";
+module.exports.PAYMENT_NOT_FOUND = "PAYMENT_NOT_FOUND";
+module.exports.CREATE_MOMO_ERROR = "CREATE_MOMO_ERROR";

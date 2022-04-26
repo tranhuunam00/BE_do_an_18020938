@@ -23,7 +23,9 @@ productRoute.post(
 );
 productRoute.get("/detail/:productId", productController.getDetailProduct);
 
-productRoute.get("/:sallerId", productController.getALlProductBySallerId);
+productRoute.get("/:sallerId", productController.getALlProduct);
+
+productRoute.get("/", productController.getALlProduct);
 
 productRoute.put(
   "/:productId",

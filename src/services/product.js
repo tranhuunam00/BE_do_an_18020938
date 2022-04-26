@@ -11,7 +11,7 @@ const updateProduct = async (filter, product) => {
   return await Product.findOneAndUpdate(filter, product);
 };
 
-const getProduct = async (filter, product) => {
+const getProduct = async (filter) => {
   return await Product.findOne(filter);
 };
 
@@ -87,6 +87,7 @@ const getDetailProduct = async (productId) => {
         price: 1,
         description: 1,
         amount: 1,
+
         createAt: 1,
         type: 1,
         saller: {

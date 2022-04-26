@@ -1,25 +1,37 @@
 const mongoose = require("mongoose");
-const { TypePayment } = require("../constants/enum");
-const walletSchema = mongoose.Schema(
+const { TypePayment, StatusPayment } = require("../constants/enum");
+const paymentSchema = mongoose.Schema(
   {
-    wallet: {
+    customer: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "wallets",
+      ref: "customers",
     },
-    currentPayment: {
-      type: Number,
-      default: 0,
-    },
-    type: {
-      type: String,
-      enum: TypePayment,
+    order: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
-      default: "MOMO",
+      ref: "orders",
     },
-    token: String,
+    paymentMethod: {
+      type: String,
+      enums: TypePayment,
+      required: true,
+    },
+    point: {
+      type: Number,
+      required: true,
+    },
+    status: {
+      type: String,
+      enums: StatusPayment,
+      required: true,
+    },
+    transactionId: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("payments", walletSchema);
+module.exports = mongoose.model("payments", paymentSchema);
