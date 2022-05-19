@@ -1,6 +1,6 @@
-const Payment = require("../models/payment");
-const mongoose = require("mongoose");
-const { lookup, unwind } = require("../utils/utility");
+const Payment = require('../models/payment');
+const mongoose = require('mongoose');
+const { lookup, unwind } = require('../utils/utility');
 
 const getAllPaymentsByFilter = async (filter) => {
   return await Payment.find(filter);
@@ -34,10 +34,10 @@ const updatePaymentByFilter = async (filter, paymentUpdate) => {
 const getOrderByPaymentId = async (paymentId) => {
   const doc = await Payment.aggregate([
     { $match: { _id: mongoose.Types.ObjectId(paymentId) } },
-    lookup("orders", "order", "_id", "order"),
-    unwind("$order"),
-    lookup("products", "order.product", "_id", "product"),
-    unwind("$product"),
+    lookup('orders', 'order', '_id', 'order'),
+    unwind('$order'),
+    lookup('products', 'order.product', '_id', 'product'),
+    unwind('$product'),
   ]);
   const res = doc.length > 0 ? doc[0] : null;
   return res?.order;
@@ -45,10 +45,10 @@ const getOrderByPaymentId = async (paymentId) => {
 const getProductByPaymentId = async (paymentId) => {
   const doc = await Payment.aggregate([
     { $match: { _id: mongoose.Types.ObjectId(paymentId) } },
-    lookup("orders", "order", "_id", "order"),
-    unwind("$order"),
-    lookup("products", "order.product", "_id", "product"),
-    unwind("$product"),
+    lookup('orders', 'order', '_id', 'order'),
+    unwind('$order'),
+    lookup('products', 'order.product', '_id', 'product'),
+    unwind('$product'),
   ]);
   const res = doc.length > 0 ? doc[0] : null;
   return res?.product;

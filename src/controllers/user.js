@@ -601,7 +601,7 @@ const logout = async (req, res) => {
 
     if (!existToken) {
       logger.debug(`[logout] ${httpResponses.TOKEN_NOT_FOUND}`);
-      return res.notFound(httpResponses.TOKEN_NOT_FOUND);
+      return res.ok(httpResponses.TOKEN_NOT_FOUND);
     }
     console.log(existToken);
     await tokenService.deleteTokenByFilter({ _id: existToken._id });

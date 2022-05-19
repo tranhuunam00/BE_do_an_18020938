@@ -148,7 +148,6 @@ const paymentWithMomoReturn = async (req, res) => {
     const payments = await Promise.all(processPayments);
     const orders = await Promise.all(processOrders);
     const products = await Promise.all(processProducts);
-    console.log("qua");
 
     let checkFound = false;
     payments.forEach((p, i) => {
@@ -156,7 +155,7 @@ const paymentWithMomoReturn = async (req, res) => {
         checkFound = true;
       }
     });
-    console.log("qua");
+
     if (checkFound) {
       logger.debug([
         `[[paymentWithMomoReturn] ${httpResponses.PAYMENT_NOT_FOUND}`,
