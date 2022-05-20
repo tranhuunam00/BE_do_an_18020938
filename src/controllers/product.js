@@ -1,11 +1,11 @@
-const logger = require("../utils/logger");
-const httpResponses = require("../utils/httpResponses");
-const constants = require("../constants/constants");
-const enums = require("../constants/enum");
+const logger = require('../utils/logger');
+const httpResponses = require('../utils/httpResponses');
+const constants = require('../constants/constants');
+const enums = require('../constants/enum');
 
-const productService = require("../services/product");
-const googleDriveService = require("../services/googleDriveService");
-const sallerService = require("../services/sallers");
+const productService = require('../services/product');
+const googleDriveService = require('../services/googleDriveService');
+const sallerService = require('../services/sallers');
 /********************************
  *
  * create Product
@@ -16,7 +16,7 @@ const createProduct = async (req, res) => {
     const { saller } = req.session;
     logger.debug(`[createProduct] sallerId = ${saller._id}`);
     const newModel = req.body;
-
+    console.log(newModel);
     if (
       !newModel.name ||
       !newModel.description ||
@@ -29,24 +29,20 @@ const createProduct = async (req, res) => {
       +newModel.amount < -1 ||
       newModel.saller ||
       newModel._id ||
-      !Number.isInteger(amount) ||
+      !Number.isInteger(+newModel.amount) ||
       !Object.keys(enums.TypeProduct).some((t) => t === newModel.type)
     ) {
       logger.debug(`[createProduct] -> ${httpResponses.QUERY_INVALID}`);
       return res.notFound(httpResponses.QUERY_INVALID);
     }
 
-    newModel.price =
-      +newModel.price > 0 ? newModel.price : constants.PRODUCT_PRICE_DEFAULT;
+    newModel.price = +newModel.price > 0 ? newModel.price : constants.PRODUCT_PRICE_DEFAULT;
 
-    newModel.amount =
-      +newModel.amount > 0 ? newModel.amount : constants.PRODUCT_AMOUNT_DEFAULT;
+    newModel.amount = +newModel.amount > 0 ? newModel.amount : constants.PRODUCT_AMOUNT_DEFAULT;
     newModel.saller = saller._id;
 
     if (req.files && req.files.imgProduct && req.files.imgProduct[0]) {
-      const imgUrl = await googleDriveService.uploadMultiGgDrive(
-        req.files.imgProduct
-      );
+      const imgUrl = await googleDriveService.uploadMultiGgDrive(req.files.imgProduct);
       newModel.imgUrl = imgUrl;
     }
 
@@ -69,16 +65,7 @@ const getALlProduct = async (req, res) => {
     const { sallerId } = req.params;
 
     logger.info(`[getALlProduct] sallerId-> ${sallerId}`);
-    const {
-      _page,
-      _limit,
-      _textSearch,
-      _typeProduct,
-      _minMoney,
-      _maxMoney,
-      _sortMoney,
-      _sortTime,
-    } = req.query;
+    const { _page, _limit, _textSearch, _typeProduct, _minMoney, _maxMoney, _sortMoney, _sortTime } = req.query;
 
     if (sallerId) {
       const existSaller = await sallerService.getOneSallerByFilter({
@@ -107,7 +94,7 @@ const getALlProduct = async (req, res) => {
       filter._minMoney = 0.1;
     }
 
-    if (_typeProduct == "ALL") {
+    if (_typeProduct == 'ALL') {
       const productArray = [];
 
       Object.keys(enums.TypeProduct).forEach((key) => {
@@ -131,16 +118,10 @@ const getALlProduct = async (req, res) => {
     }
 
     if (_typeProduct) {
-      filter.typeProduct = Object.values(enums.TypeProduct).some(
-        (v) => v === _typeProduct
-      )
-        ? _typeProduct
-        : null;
+      filter.typeProduct = Object.values(enums.TypeProduct).some((v) => v === _typeProduct) ? _typeProduct : null;
     }
 
-    const { products, count, total } = await productService.getALlProduct(
-      filter
-    );
+    const { products, count, total } = await productService.getALlProduct(filter);
 
     pagination._total = count;
 
@@ -169,9 +150,7 @@ const getDetailProduct = async (req, res) => {
     }
 
     if (req.files && req.files.imgProduct && req.files.imgProduct[0]) {
-      const imgUrl = await googleDriveService.uploadMultiGgDrive(
-        req.files.imgProduct
-      );
+      const imgUrl = await googleDriveService.uploadMultiGgDrive(req.files.imgProduct);
       newModel.imgUrl = imgUrl;
     }
 
@@ -198,7 +177,7 @@ const updateProduct = async (req, res) => {
     logger.debug(`[updateProduct] sallerId =->${saller._id}`);
 
     if (newModel.imgUrl) {
-      newModel.imgUrl = newModel.imgUrl.split(",");
+      newModel.imgUrl = newModel.imgUrl.split(',');
     }
     console.log(newModel);
     if (
@@ -207,8 +186,7 @@ const updateProduct = async (req, res) => {
       (newModel.price && +newModel.price < 0) ||
       (newModel.amount && +newModel.amount < 0) ||
       (newModel.amount && !Number.isInteger(+newModel.amount)) ||
-      (newModel.type &&
-        !Object.keys(enums.TypeProduct).includes(newModel.type)) ||
+      (newModel.type && !Object.keys(enums.TypeProduct).includes(newModel.type)) ||
       (newModel.imgUrl && !Array.isArray(newModel.imgUrl))
     ) {
       logger.debug(`[updateProduct] -> ${httpResponses.QUERY_INVALID}`);
@@ -237,23 +215,21 @@ const updateProduct = async (req, res) => {
     }
 
     if (req.files && req.files.imgProduct && req.files.imgProduct[0]) {
-      const imgUrlDriver = await googleDriveService.uploadMultiGgDrive(
-        req.files.imgProduct
-      );
+      const imgUrlDriver = await googleDriveService.uploadMultiGgDrive(req.files.imgProduct);
       let checkExistUrlImg = false;
 
       newModel.imgUrl.forEach((url, index) => {
-        if (url !== "false") {
+        if (url !== 'false') {
           if (!currentProduct.imgUrl.includes(url)) {
             checkExistUrlImg = true;
           }
         }
-        if (url === "false" && imgUrlDriver?.length > 0) {
+        if (url === 'false' && imgUrlDriver?.length > 0) {
           newModel.imgUrl[index] = imgUrlDriver[0];
           url = imgUrlDriver[0];
           imgUrlDriver.shift();
         }
-        if (url === "false" && imgUrlDriver?.length === 0) {
+        if (url === 'false' && imgUrlDriver?.length === 0) {
           newModel.imgUrl.splice(index, 1);
         }
       });
@@ -263,19 +239,15 @@ const updateProduct = async (req, res) => {
       console.log(newModel.imgUr);
 
       if (checkExistUrlImg) {
-        logger.debug(
-          `[updateProduct] -> ${httpResponses.PRODUCT_IMG_URL_NOT_FOUND}`
-        );
+        logger.debug(`[updateProduct] -> ${httpResponses.PRODUCT_IMG_URL_NOT_FOUND}`);
         return res.notFound(httpResponses.PRODUCT_IMG_URL_NOT_FOUND);
       }
       if (newModel.imgUrl.length > 6) {
-        logger.debug(
-          `[updateProduct] -> ${httpResponses.PRODUCT_IMG_URL_LIMIT_6}`
-        );
+        logger.debug(`[updateProduct] -> ${httpResponses.PRODUCT_IMG_URL_LIMIT_6}`);
         return res.notFound(httpResponses.PRODUCT_IMG_URL_LIMIT_6);
       }
     }
-    if (newModel.imgUrl === "") {
+    if (newModel.imgUrl === '') {
       newModel.imgUrl = [];
     }
     console.log(newModel);
