@@ -155,7 +155,7 @@ const getDetailProduct = async (req, res) => {
     }
 
     logger.debug(`[getDetailProduct] -> ${httpResponses.SUCCESS}`);
-
+    console.log('123');
     res.ok(httpResponses.SUCCESS, product);
   } catch (err) {
     logger.error(`[getDetailProduct] error -> ${err.message}`);
